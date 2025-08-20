@@ -1,8 +1,9 @@
 const CACHE_NAME = "kosanku-cache-v1";
 const FILES_TO_CACHE = [
-  "index.html", // halaman utama
-
-  "icon.png", // icon (jika ada)
+  "/kosanku/",
+  "/kosanku/index.html",
+  "/kosanku/icon.png",
+  "/kosanku/manifest.json",
 ];
 
 // Install Service Worker → cache file
@@ -39,3 +40,4 @@ self.addEventListener("fetch", (event) => {
     })
   );
 });
+
