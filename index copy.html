@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Rekap Kosan</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css"
+    />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background: #f8f9fa;
+        color: #333;
+        padding-bottom: 90px;
+      }
+
+      .header {
+        background: white;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .header h1 {
+        font-size: 24px;
+        font-weight: 600;
+        color: #2c3e50;
+      }
+
+      .container {
+        padding: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .page {
+        display: none;
+      }
+
+      .page.active {
+        display: block;
+      }
+
+      /* Filter Section */
+      .filter-section {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        margin-bottom: 20px;
+      }
+
+      .filter-row {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+
+      .filter-row:last-child {
+        margin-bottom: 0;
+      }
+
+      .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        flex: 1;
+        min-width: 120px;
+      }
+
+      .filter-group label {
+        font-size: 12px;
+        color: #6c757d;
+        font-weight: 500;
+      }
+
+      .filter-group select,
+      .filter-group input {
+        padding: 10px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 14px;
+        background: white;
+      }
+
+      .btn-filter {
+        padding: 10px 20px;
+        background: #2c3e50;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        cursor: pointer;
+        align-self: end;
+      }
+
+      /* Stats Cards */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+
+      .stat-card {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      }
+
+      .stat-card h3 {
+        font-size: 14px;
+        color: #6c757d;
+        margin-bottom: 8px;
+        font-weight: 500;
+      }
+
+      .stat-card .value {
+        font-size: 28px;
+        font-weight: 700;
+        color: #2c3e50;
+      }
+
+      .stat-card .currency {
+        color: #27ae60;
+      }
+
+      /* Card List */
+      .card-list {
+        display: grid;
+        gap: 16px;
+      }
+
+      .card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        position: relative;
+      }
+
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 12px;
+      }
+
+      .card-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #2c3e50;
+      }
+
+      .card-subtitle {
+        font-size: 14px;
+        color: #6c757d;
+        margin-top: 2px;
+      }
+
+      .card-actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      .btn-icon {
+        width: 36px;
+        height: 36px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+      }
+
+      .btn-edit {
+        background: #f8f9fa;
+        color: #6c757d;
+      }
+
+      .btn-delete {
+        background: #ffe6e6;
+        color: #e74c3c;
+      }
+
+      .btn-whatsapp {
+        background: #e8f5e8;
+        color: #25d366;
+      }
+
+      .btn-pay {
+        background: #e8f4fd;
+        color: #3498db;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      .card-content {
+        display: grid;
+        gap: 8px;
+      }
+
+      .card-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .card-label {
+        font-size: 14px;
+        color: #6c757d;
+      }
+
+      .card-value {
+        font-size: 14px;
+        color: #2c3e50;
+        font-weight: 500;
+      }
+
+      .status {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      .status.paid {
+        background: #e8f5e8;
+        color: #27ae60;
+      }
+
+      .status.unpaid {
+        background: #ffe6e6;
+        color: #e74c3c;
+      }
+
+      .status.available {
+        background: #e8f5e8;
+        color: #27ae60;
+      }
+
+      .status.occupied {
+        background: #ffe6e6;
+        color: #e74c3c;
+      }
+
+      /* Add Button */
+      .add-btn {
+        position: fixed;
+        bottom: 100px;
+        right: 20px;
+        width: 56px;
+        height: 56px;
+        background: #2c3e50;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        font-size: 24px;
+        cursor: pointer;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        z-index: 99;
+      }
+
+      /* Bottom Navigation */
+      .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        display: flex;
+        justify-content: space-around;
+        padding: 12px 0;
+        box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+      }
+
+      .nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-decoration: none;
+        color: #6c757d;
+        font-size: 12px;
+        padding: 8px;
+        border-radius: 12px;
+        transition: all 0.2s;
+      }
+
+      .nav-item.active {
+        color: #2c3e50;
+        background: #f8f9fa;
+      }
+
+      .nav-icon {
+        width: 24px;
+        height: 24px;
+        margin-bottom: 4px;
+        font-size: 20px;
+      }
+
+      /* Modal */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 2000;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .modal.show {
+        display: flex;
+      }
+
+      .modal-content {
+        background: white;
+        border-radius: 16px;
+        padding: 24px;
+        width: 100%;
+        max-width: 500px;
+        max-height: 80vh;
+        overflow-y: auto;
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .modal-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #2c3e50;
+      }
+
+      .btn-close {
+        width: 32px;
+        height: 32px;
+        border: none;
+        background: #f8f9fa;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .form-group {
+        margin-bottom: 16px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 14px;
+        color: #2c3e50;
+        font-weight: 500;
+      }
+
+      .form-group input,
+      .form-group select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 14px;
+      }
+
+      .btn-primary {
+        width: 100%;
+        padding: 12px;
+        background: #2c3e50;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+      }
+
+      .btn-primary:hover {
+        background: #34495e;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .container {
+          padding: 16px;
+        }
+
+        .filter-row {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .filter-group {
+          min-width: auto;
+        }
+
+        .btn-filter {
+          align-self: stretch;
+        }
+
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .card-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 12px;
+        }
+
+        .card-actions {
+          align-self: flex-end;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1 id="pageTitle">Dashboard</h1>
+    </div>
+
+    <div id="home" class="page active">
+      <div class="container">
+        <div class="filter-section">
+          <div class="filter-row">
+            <div class="filter-group">
+              <label>Bulan</label>
+              <select id="homeMonth"></select>
+            </div>
+            <div class="filter-group">
+              <label>Tahun</label>
+              <select id="homeYear"></select>
+            </div>
+          </div>
+        </div>
+
+        <div class="stats-grid" id="homeStats"></div>
+
+        <div class="card-list" id="homeList">
+          <div class="loading-message">Memuat data dashboard...</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="pembayaran" class="page">
+      <div class="container">
+        <div class="filter-section">
+          <div class="filter-row">
+            <div class="filter-group">
+              <label>Dari Tanggal</label>
+              <input type="date" id="paymentFromDate" />
+            </div>
+            <div class="filter-group">
+              <label>Sampai Tanggal</label>
+              <input type="date" id="paymentToDate" />
+            </div>
+            <button class="btn-filter" id="filterPaymentsBtn">Filter</button>
+          </div>
+        </div>
+
+        <div class="card-list" id="paymentList">
+          <div class="loading-message">Memuat riwayat pembayaran...</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="kosan" class="page">
+      <div class="container">
+        <div class="filter-section">
+          <div class="filter-row">
+            <div class="filter-group">
+              <label>Status</label>
+              <select id="roomStatusFilter">
+                <option value="">Semua</option>
+                <option value="Available">Available</option>
+                <option value="Terisi">Terisi</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-list" id="roomList">
+          <div class="loading-message">Memuat data kamar...</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="penghuni" class="page">
+      <div class="container">
+        <div class="card-list" id="tenantList">
+          <div class="loading-message">Memuat data penghuni...</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="add-btn" onclick="showAddModal()">
+      <i class="mdi mdi-plus"></i>
+    </button>
+
+    <div class="bottom-nav">
+      <a href="#" class="nav-item active" onclick="showPage('home', this)">
+        <div class="nav-icon"><i class="mdi mdi-home"></i></div>
+        <span>Home</span>
+      </a>
+      <a href="#" class="nav-item" onclick="showPage('pembayaran', this)">
+        <div class="nav-icon"><i class="mdi mdi-credit-card"></i></div>
+        <span>Pembayaran</span>
+      </a>
+      <a href="#" class="nav-item" onclick="showPage('kosan', this)">
+        <div class="nav-icon"><i class="mdi mdi-office-building"></i></div>
+        <span>Kamar</span>
+      </a>
+      <a href="#" class="nav-item" onclick="showPage('penghuni', this)">
+        <div class="nav-icon"><i class="mdi mdi-account-group"></i></div>
+        <span>Penghuni</span>
+      </a>
+    </div>
+
+    <div id="modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="modalTitle">Tambah Data</h2>
+          <button class="btn-close" onclick="closeModal()">
+            <i class="mdi mdi-close"></i>
+          </button>
+        </div>
+        <form id="modalForm">
+          <input type="hidden" name="id" id="modalIdField" />
+          <div id="modalFields"></div>
+          <button type="submit" class="btn-primary" id="modalSubmitButton">
+            Simpan
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div
+      id="toast"
+      style="
+        visibility: hidden;
+        min-width: 250px;
+        margin-left: -125px;
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        border-radius: 8px;
+        padding: 16px;
+        position: fixed;
+        z-index: 3000;
+        left: 50%;
+        bottom: 120px;
+        font-size: 16px;
+      "
+    >
+      Pesan notifikasi.
+    </div>
+
+    <script>
+      // ===============================================================
+      // KONFIGURASI DAN STATE APLIKASI
+      // ===============================================================
+      const WEB_APP_URL =
+        "https://script.google.com/macros/s/AKfycbzejxWV15oT3mgVeqMKLWVyGYqvY-COsI9HwXRlyKG4pDfhxEMPLYeve_URMBmIhE8m9A/exec";
+      let currentPage = "home";
+      const appData = {
+        penghuni: [],
+        kamar: [],
+        pembayaran: [],
+      };
+
+      // ===============================================================
+      // FUNGSI UTAMA & PEMUATAN DATA
+      // ===============================================================
+      document.addEventListener("DOMContentLoaded", () => {
+        initializeFilters();
+        loadAllData();
+        setupEventListeners();
+      });
+
+      function setupEventListeners() {
+        document
+          .getElementById("modalForm")
+          .addEventListener("submit", handleFormSubmit);
+        document.getElementById("modal").addEventListener("click", (e) => {
+          if (e.target === e.currentTarget) closeModal();
+        });
+
+        // Filter listeners
+        document
+          .getElementById("homeMonth")
+          .addEventListener("change", renderHomePage);
+        document
+          .getElementById("homeYear")
+          .addEventListener("change", renderHomePage);
+        document
+          .getElementById("filterPaymentsBtn")
+          .addEventListener("click", renderPembayaranPage);
+        document
+          .getElementById("roomStatusFilter")
+          .addEventListener("change", renderKamarPage);
+      }
+
+      function loadAllData() {
+        // Tampilkan pesan loading di semua halaman
+        showLoadingMessage("homeList", "Memuat data dashboard...");
+        showLoadingMessage("paymentList", "Memuat riwayat pembayaran...");
+        showLoadingMessage("roomList", "Memuat data kamar...");
+        showLoadingMessage("tenantList", "Memuat data penghuni...");
+
+        const fetchPenghuni = fetch(`${WEB_APP_URL}?action=getPenghuni`).then(
+          (res) => res.json()
+        );
+        const fetchKamar = fetch(`${WEB_APP_URL}?action=getKamar`).then((res) =>
+          res.json()
+        );
+        const fetchPembayaran = fetch(
+          `${WEB_APP_URL}?action=getPembayaran`
+        ).then((res) => res.json());
+
+        Promise.all([fetchPenghuni, fetchKamar, fetchPembayaran])
+          .then((responses) => {
+            appData.penghuni = responses[0].data || [];
+            appData.kamar = responses[1].data || [];
+            appData.pembayaran = responses[2].data || [];
+
+            // Setelah semua data dimuat, render semua halaman
+            renderAllPages();
+          })
+          .catch((error) => {
+            console.error("Gagal memuat semua data:", error);
+            showToast("Gagal memuat data. Periksa koneksi atau konsol.", true);
+          });
+      }
+
+      // ===============================================================
+      // FUNGSI RENDER (MENAMPILKAN DATA KE HTML)
+      // ===============================================================
+
+      function renderAllPages() {
+        renderHomePage();
+        renderPembayaranPage();
+        renderKamarPage();
+        renderPenghuniPage();
+      }
+
+      function renderHomePage() {
+        const listContainer = document.getElementById("homeList");
+        const statsContainer = document.getElementById("homeStats");
+
+        const selectedMonth = parseInt(
+          document.getElementById("homeMonth").value
+        );
+        const selectedYear = parseInt(
+          document.getElementById("homeYear").value
+        );
+
+        let totalIncome = 0;
+        let paidCount = 0;
+
+        // Gabungkan data penghuni dengan status pembayaran bulan ini
+        const penghuniWithStatus = appData.penghuni.map((penghuni) => {
+          const pembayaranBulanIni = appData.pembayaran.find((p) => {
+            const tglBayar = new Date(p.tanggal_bayar);
+            return (
+              p.id_penghuni === penghuni.id_penghuni &&
+              tglBayar.getMonth() === selectedMonth &&
+              tglBayar.getFullYear() === selectedYear
+            );
+          });
+
+          if (pembayaranBulanIni) {
+            totalIncome += parseFloat(pembayaranBulanIni.jumlah) || 0;
+            paidCount++;
+          }
+
+          return { ...penghuni, pembayaran: pembayaranBulanIni };
+        });
+
+        // Render Stats Cards
+        statsContainer.innerHTML = `
+        <div class="stat-card"><h3>Total Penghasilan</h3><div class="value currency">${formatCurrency(
+          totalIncome
+        )}</div></div>
+        <div class="stat-card"><h3>Sudah Bayar</h3><div class="value">${paidCount} Penghuni</div></div>
+        <div class="stat-card"><h3>Belum Bayar</h3><div class="value">${
+          appData.penghuni.length - paidCount
+        } Penghuni</div></div>`;
+
+        if (penghuniWithStatus.length === 0) {
+          showNoDataMessage("homeList", "Belum ada data penghuni.");
+          return;
+        }
+
+        listContainer.innerHTML = penghuniWithStatus
+          .map((p) => {
+            const kamar =
+              appData.kamar.find((k) => k.no_kamar == p.no_kamar) || {};
+
+            const statusClass = p.pembayaran ? "paid" : "unpaid";
+            const statusText = p.pembayaran ? "Sudah Bayar" : "Belum Bayar";
+
+            const paymentInfo = p.pembayaran
+              ? `<div class="card-row"><span class="card-label">Pembayaran</span><span class="card-value">${formatCurrency(
+                  p.pembayaran.jumlah
+                )}</span></div>
+               <div class="card-row"><span class="card-label">Tanggal Bayar</span><span class="card-value">${formatDate(
+                 p.pembayaran.tanggal_bayar
+               )}</span></div>`
+              : `<div class="card-row"><span class="card-label">Tagihan</span><span class="card-value">${formatCurrency(
+                  kamar.harga || 0
+                )}</span></div>
+               <div class="card-row"><span class="card-label">Aksi</span><span class="card-value"><button class="btn-pay" onclick="showAddModal('pembayaran', {id_penghuni: '${
+                 p.id_penghuni
+               }', jumlah: '${
+                  kamar.harga || 0
+                }'})">Bayar</button></span></div>`;
+
+            return `
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">${p.nama_penghuni}</div>
+                        <div class="card-subtitle">Kamar ${
+                          p.no_kamar || "N/A"
+                        }</div>
+                    </div>
+                    <span class="status ${statusClass}">${statusText}</span>
+                </div>
+                <div class="card-content">${paymentInfo}</div>
+            </div>`;
+          })
+          .join("");
+      }
+
+      function renderPembayaranPage() {
+        const listContainer = document.getElementById("paymentList");
+        const fromDate = document.getElementById("paymentFromDate").value;
+        const toDate = document.getElementById("paymentToDate").value;
+
+        let filteredPayments = appData.pembayaran;
+
+        if (fromDate && toDate) {
+          const start = new Date(fromDate).getTime();
+          const end = new Date(toDate).getTime() + (24 * 60 * 60 * 1000 - 1); // Include the whole end day
+          filteredPayments = appData.pembayaran.filter((p) => {
+            const paymentDate = new Date(p.tanggal_bayar).getTime();
+            return paymentDate >= start && paymentDate <= end;
+          });
+        }
+
+        if (filteredPayments.length === 0) {
+          showNoDataMessage(
+            "paymentList",
+            "Tidak ada data pembayaran pada rentang tanggal ini."
+          );
+          return;
+        }
+
+        listContainer.innerHTML = filteredPayments
+          .map((p) => {
+            const penghuni =
+              appData.penghuni.find((ph) => ph.id_penghuni === p.id_penghuni) ||
+              {};
+            return `
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">${
+                          penghuni.nama_penghuni || "Penghuni Dihapus"
+                        }</div>
+                        <div class="card-subtitle">Kamar ${
+                          penghuni.no_kamar || "N/A"
+                        }</div>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-icon btn-whatsapp" onclick="openWhatsApp('${
+                          penghuni.no_telp || ""
+                        }')"><i class="mdi mdi-whatsapp"></i></button>
+                        <button class="btn-icon btn-edit" onclick="showEditModal('pembayaran', '${
+                          p.id_pembayaran
+                        }')"><i class="mdi mdi-pencil"></i></button>
+                        <button class="btn-icon btn-delete" onclick="handleDelete('Pembayaran', '${
+                          p.id_pembayaran
+                        }')"><i class="mdi mdi-delete"></i></button>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="card-row"><span class="card-label">Jumlah</span><span class="card-value">${formatCurrency(
+                      p.jumlah
+                    )}</span></div>
+                    <div class="card-row"><span class="card-label">Metode</span><span class="card-value">${
+                      p.metode
+                    }</span></div>
+                    <div class="card-row"><span class="card-label">Tanggal</span><span class="card-value">${formatDate(
+                      p.tanggal_bayar
+                    )}</span></div>
+                </div>
+            </div>`;
+          })
+          .join("");
+      }
+
+      function renderKamarPage() {
+        const listContainer = document.getElementById("roomList");
+        const statusFilter = document.getElementById("roomStatusFilter").value;
+
+        let filteredKamar = appData.kamar;
+        if (statusFilter) {
+          filteredKamar = appData.kamar.filter(
+            (k) => k.status === statusFilter
+          );
+        }
+
+        if (filteredKamar.length === 0) {
+          showNoDataMessage(
+            "roomList",
+            "Tidak ada data kamar dengan filter ini."
+          );
+          return;
+        }
+
+        listContainer.innerHTML = filteredKamar
+          .map((k) => {
+            const isOccupied = k.status === "Terisi";
+            const penghuni = isOccupied
+              ? appData.penghuni.find(
+                  (p) => String(p.no_kamar) === String(k.no_kamar)
+                )
+              : null;
+
+            const statusClass = isOccupied ? "occupied" : "available";
+            const statusText = isOccupied ? "Terisi" : "Available";
+            const penghuniInfo = isOccupied
+              ? `<div class="card-row"><span class="card-label">Penghuni</span><span class="card-value">${
+                  penghuni ? penghuni.nama_penghuni : "Data tidak ditemukan"
+                }</span></div>`
+              : `<div class="card-row"><span class="card-label">Fasilitas</span><span class="card-value">${
+                  k.fasilitas || "N/A"
+                }</span></div>`;
+
+            return `
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">Kamar ${k.no_kamar}</div>
+                        <div class="card-subtitle">Lantai ${
+                          k.lantai || "N/A"
+                        }</div>
+                    </div>
+                    <div class="card-actions">
+                        <span class="status ${statusClass}">${statusText}</span>
+                        <button class="btn-icon btn-edit" onclick="showEditModal('kamar', '${
+                          k.no_kamar
+                        }')"><i class="mdi mdi-pencil"></i></button>
+                        <button class="btn-icon btn-delete" onclick="handleDelete('Kamar', '${
+                          k.no_kamar
+                        }')"><i class="mdi mdi-delete"></i></button>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="card-row"><span class="card-label">Harga</span><span class="card-value">${formatCurrency(
+                      k.harga
+                    )}/bulan</span></div>
+                    ${penghuniInfo}
+                </div>
+            </div>`;
+          })
+          .join("");
+      }
+
+      function renderPenghuniPage() {
+        const listContainer = document.getElementById("tenantList");
+        if (appData.penghuni.length === 0) {
+          showNoDataMessage("tenantList", "Belum ada data penghuni.");
+          return;
+        }
+        listContainer.innerHTML = appData.penghuni
+          .map((p) => {
+            const tglMasuk = new Date(p.tanggal_masuk);
+            const today = new Date();
+            const diffMonths =
+              (today.getFullYear() - tglMasuk.getFullYear()) * 12 +
+              (today.getMonth() - tglMasuk.getMonth());
+
+            return `
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">${p.nama_penghuni}</div>
+                        <div class="card-subtitle">Kamar ${p.no_kamar}</div>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-icon btn-whatsapp" onclick="openWhatsApp('${
+                          p.no_telp
+                        }')"><i class="mdi mdi-whatsapp"></i></button>
+                        <button class="btn-icon btn-edit" onclick="showEditModal('penghuni', '${
+                          p.id_penghuni
+                        }')"><i class="mdi mdi-pencil"></i></button>
+                        <button class="btn-icon btn-delete" onclick="handleDelete('Penghuni', '${
+                          p.id_penghuni
+                        }')"><i class="mdi mdi-delete"></i></button>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="card-row"><span class="card-label">No. Telepon</span><span class="card-value">${
+                      p.no_telp
+                    }</span></div>
+                    <div class="card-row"><span class="card-label">Tanggal Masuk</span><span class="card-value">${formatDate(
+                      p.tanggal_masuk
+                    )}</span></div>
+                    <div class="card-row"><span class="card-label">Durasi</span><span class="card-value">${diffMonths} bulan</span></div>
+                </div>
+            </div>`;
+          })
+          .join("");
+      }
+
+      // ===============================================================
+      // FUNGSI MODAL (UNTUK FORM TAMBAH/EDIT)
+      // ===============================================================
+
+      let currentFormType = ""; // 'penghuni', 'kamar', 'pembayaran'
+      let currentFormMode = ""; // 'add', 'edit'
+
+      function showAddModal(pageType = currentPage, prefillData = {}) {
+        // Perbaikan: Mencegah modal kosong muncul di halaman Home
+        if (pageType === "home") {
+          showToast(
+            "Silakan pilih halaman (Pembayaran, Kamar, atau Penghuni) untuk menambah data.",
+            true
+          );
+          return;
+        }
+
+        currentFormType = pageType;
+        currentFormMode = "add";
+
+        document.getElementById("modalIdField").value = "";
+        document.getElementById(
+          "modalTitle"
+        ).textContent = `Tambah ${capitalize(pageType)}`;
+
+        generateFormFields(pageType, prefillData);
+        document.getElementById("modal").classList.add("show");
+      }
+
+      function showEditModal(type, id) {
+        currentFormType = type;
+        currentFormMode = "edit";
+
+        const data = findDataById(type, id);
+        if (!data) {
+          showToast("Data tidak ditemukan!", true);
+          return;
+        }
+
+        document.getElementById("modalIdField").value = id;
+        document.getElementById("modalTitle").textContent = `Edit ${capitalize(
+          type
+        )}`;
+
+        generateFormFields(type, data);
+        document.getElementById("modal").classList.add("show");
+      }
+
+      function generateFormFields(type, data = {}) {
+        const fieldsContainer = document.getElementById("modalFields");
+        let fieldsHTML = "";
+
+        switch (type) {
+          case "penghuni":
+            const availableRooms = appData.kamar.filter(
+              (k) =>
+                k.status.toLowerCase() === "available" ||
+                String(k.no_kamar) === String(data.no_kamar)
+            );
+            const roomOptions = availableRooms
+              .map(
+                (k) =>
+                  `<option value="${k.no_kamar}" ${
+                    String(data.no_kamar) === String(k.no_kamar)
+                      ? "selected"
+                      : ""
+                  }>Kamar ${k.no_kamar}</option>`
+              )
+              .join("");
+
+            fieldsHTML = `
+                <div class="form-group"><label>ID Penghuni (unik, cth: P001)</label><input type="text" name="id_penghuni" value="${
+                  data.id_penghuni || ""
+                }" ${
+              currentFormMode === "edit" ? "readonly" : "required"
+            }></div>
+                <div class="form-group"><label>Nama Lengkap</label><input type="text" name="nama_penghuni" value="${
+                  data.nama_penghuni || ""
+                }" required></div>
+                <div class="form-group"><label>No. Telepon</label><input type="tel" name="no_telp" value="${
+                  data.no_telp || ""
+                }" required></div>
+                <div class="form-group"><label>Kamar (hanya kamar kosong yang tampil)</label><select name="no_kamar" required><option value="">Pilih Kamar</option>${roomOptions}</select></div>
+                <div class="form-group"><label>Tanggal Masuk</label><input type="date" name="tanggal_masuk" value="${
+                  (data.tanggal_masuk || "").split("T")[0]
+                }" required></div>
+            `;
+            break;
+
+          case "kamar":
+            // Ini adalah bagian yang diperbaiki untuk menambah kamar
+            fieldsHTML = `
+                <div class="form-group"><label>Nomor Kamar</label><input type="text" name="no_kamar" value="${
+                  data.no_kamar || ""
+                }" ${
+              currentFormMode === "edit" ? "readonly" : "required"
+            }></div>
+                <div class="form-group"><label>Harga per Bulan</label><input type="number" name="harga" value="${
+                  data.harga || ""
+                }" required placeholder="1500000"></div>
+                <div class="form-group"><label>Lantai</label><input type="number" name="lantai" value="${
+                  data.lantai || ""
+                }" required placeholder="1"></div>
+                <div class="form-group"><label>Fasilitas</label><input type="text" name="fasilitas" value="${
+                  data.fasilitas || ""
+                }" placeholder="AC, WiFi, KM Dalam"></div>
+                <div class="form-group"><label>Status Awal</label><select name="status" required>
+                    <option value="Available" ${
+                      data.status === "Available" ? "selected" : ""
+                    }>Available</option>
+                    <option value="Terisi" ${
+                      data.status === "Terisi" ? "selected" : ""
+                    }>Terisi</option>
+                </select></div>
+            `;
+            break;
+
+          case "pembayaran":
+            const tenantOptions = appData.penghuni
+              .map(
+                (p) =>
+                  `<option value="${p.id_penghuni}" ${
+                    data.id_penghuni === p.id_penghuni ? "selected" : ""
+                  }>${p.nama_penghuni} (Kamar ${p.no_kamar})</option>`
+              )
+              .join("");
+            fieldsHTML = `
+                <div class="form-group"><label>ID Pembayaran (otomatis)</label><input type="text" name="id_pembayaran" value="${
+                  data.id_pembayaran || "PAY" + Date.now()
+                }" readonly required></div>
+                <div class="form-group"><label>Penghuni</label><select name="id_penghuni" required><option value="">Pilih Penghuni</option>${tenantOptions}</select></div>
+                <div class="form-group"><label>Jumlah</label><input type="number" name="jumlah" value="${
+                  data.jumlah || ""
+                }" required></div>
+                <div class="form-group"><label>Metode Pembayaran</label><select name="metode" required>
+                    <option value="Transfer" ${
+                      data.metode === "Transfer" ? "selected" : ""
+                    }>Transfer</option>
+                    <option value="Tunai" ${
+                      data.metode === "Tunai" ? "selected" : ""
+                    }>Tunai</option>
+                    <option value="E-Wallet" ${
+                      data.metode === "E-Wallet" ? "selected" : ""
+                    }>E-Wallet</option>
+                </select></div>
+                <div class="form-group"><label>Tanggal Pembayaran</label><input type="date" name="tanggal_bayar" value="${
+                  (data.tanggal_bayar || new Date().toISOString()).split("T")[0]
+                }" required></div>
+            `;
+            break;
+        }
+        fieldsContainer.innerHTML = fieldsHTML;
+      }
+      function closeModal() {
+        document.getElementById("modal").classList.remove("show");
+        document.getElementById("modalForm").reset();
+        document.getElementById("modalFields").innerHTML = "";
+      }
+
+      // ===============================================================
+      // FUNGSI AKSI (SUBMIT FORM, DELETE, DLL)
+      // ===============================================================
+
+      function handleFormSubmit(e) {
+        e.preventDefault();
+        const submitButton = document.getElementById("modalSubmitButton");
+        submitButton.disabled = true;
+        submitButton.textContent = "Menyimpan...";
+
+        const formData = new FormData(e.target);
+        const data = Object.fromEntries(formData.entries());
+        const id = data.id;
+        delete data.id; // Hapus ID dari objek data utama
+
+        const payload = {
+          action: `${currentFormMode === "add" ? "tambah" : "edit"}${capitalize(
+            currentFormType
+          )}`,
+          id: id, // ID untuk edit
+          data: data,
+        };
+
+        fetch(WEB_APP_URL, {
+          method: "POST",
+          body: JSON.stringify(payload),
+          headers: { "Content-Type": "application/json" },
+          mode: "no-cors", // HAPUS INI SETELAH DEBUGGING JIKA PERLU
+        })
+          .then((res) => {
+            // Karena no-cors, kita tidak bisa membaca response. Jadi kita asumsikan berhasil.
+            showToast("Data berhasil disimpan! Memuat ulang data...");
+            closeModal();
+            setTimeout(loadAllData, 1000); // Beri waktu spreadsheet untuk update
+          })
+          .catch((error) => {
+            console.error("Error submitting form:", error);
+            showToast("Gagal menyimpan data. Lihat konsol.", true);
+          })
+          .finally(() => {
+            submitButton.disabled = false;
+            submitButton.textContent = "Simpan";
+          });
+      }
+
+      function handleDelete(type, id) {
+        if (
+          !confirm(
+            `Apakah Anda yakin ingin menghapus data ini? Aksi ini tidak bisa dibatalkan.`
+          )
+        ) {
+          return;
+        }
+
+        const payload = {
+          action: "hapusData",
+          sheetName: type,
+          id: id,
+        };
+
+        showToast("Menghapus data...");
+        fetch(WEB_APP_URL, {
+          method: "POST",
+          body: JSON.stringify(payload),
+          headers: { "Content-Type": "application/json" },
+          mode: "no-cors", // HAPUS INI SETELAH DEBUGGING
+        })
+          .then((res) => {
+            showToast("Data berhasil dihapus. Memuat ulang...");
+            setTimeout(loadAllData, 1000); // Beri waktu spreadsheet untuk update
+          })
+          .catch((error) => {
+            console.error("Error deleting data:", error);
+            showToast("Gagal menghapus data. Lihat konsol.", true);
+          });
+      }
+
+      // ===============================================================
+      // FUNGSI BANTUAN (HELPERS)
+      // ===============================================================
+      function showPage(pageId, navItem) {
+        document
+          .querySelectorAll(".page")
+          .forEach((page) => page.classList.remove("active"));
+        document.getElementById(pageId).classList.add("active");
+
+        document
+          .querySelectorAll(".nav-item")
+          .forEach((item) => item.classList.remove("active"));
+        navItem.classList.add("active");
+
+        const titles = {
+          home: "Dashboard",
+          pembayaran: "Pembayaran",
+          kosan: "Manajemen Kamar",
+          penghuni: "Data Penghuni",
+        };
+        document.getElementById("pageTitle").textContent = titles[pageId];
+        currentPage = pageId;
+      }
+
+      function initializeFilters() {
+        const today = new Date();
+        const currentMonth = today.getMonth();
+        const currentYear = today.getFullYear();
+
+        const monthSelect = document.getElementById("homeMonth");
+        const yearSelect = document.getElementById("homeYear");
+        const months = [
+          "Januari",
+          "Februari",
+          "Maret",
+          "April",
+          "Mei",
+          "Juni",
+          "Juli",
+          "Agustus",
+          "September",
+          "Oktober",
+          "November",
+          "Desember",
+        ];
+
+        monthSelect.innerHTML = months
+          .map(
+            (m, i) =>
+              `<option value="${i}" ${
+                i === currentMonth ? "selected" : ""
+              }>${m}</option>`
+          )
+          .join("");
+        yearSelect.innerHTML = [currentYear - 1, currentYear, currentYear + 1]
+          .map(
+            (y) =>
+              `<option value="${y}" ${
+                y === currentYear ? "selected" : ""
+              }>${y}</option>`
+          )
+          .join("");
+
+        const firstDay = new Date(today.getFullYear(), today.getMonth(), 1)
+          .toISOString()
+          .split("T")[0];
+        const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0)
+          .toISOString()
+          .split("T")[0];
+        document.getElementById("paymentFromDate").value = firstDay;
+        document.getElementById("paymentToDate").value = lastDay;
+      }
+
+      function findDataById(type, id) {
+        const keyMap = {
+          penghuni: "id_penghuni",
+          kamar: "no_kamar",
+          pembayaran: "id_pembayaran",
+        };
+        return appData[type].find(
+          (item) => String(item[keyMap[type]]) === String(id)
+        );
+      }
+
+      function showToast(message, isError = false) {
+        const toast = document.getElementById("toast");
+        toast.textContent = message;
+        toast.style.backgroundColor = isError ? "#e74c3c" : "#2c3e50";
+        toast.style.visibility = "visible";
+        setTimeout(() => {
+          toast.style.visibility = "hidden";
+        }, 3000);
+      }
+
+      function showLoadingMessage(containerId, message) {
+        document.getElementById(
+          containerId
+        ).innerHTML = `<div class="loading-message">${message}</div>`;
+      }
+
+      function showNoDataMessage(containerId, message) {
+        document.getElementById(
+          containerId
+        ).innerHTML = `<div class="no-data-message">${message}</div>`;
+      }
+
+      function formatCurrency(number) {
+        if (isNaN(number)) return "Rp 0";
+        return new Intl.NumberFormat("id-ID", {
+          style: "currency",
+          currency: "IDR",
+          minimumFractionDigits: 0,
+        }).format(number);
+      }
+
+      function formatDate(dateString) {
+        if (!dateString) return "N/A";
+        return new Date(dateString).toLocaleDateString("id-ID", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        });
+      }
+
+      function capitalize(s) {
+        return s.charAt(0).toUpperCase() + s.slice(1);
+      }
+
+      function openWhatsApp(phone) {
+        if (!phone) {
+          showToast("Nomor telepon tidak tersedia.", true);
+          return;
+        }
+        let formattedPhone = phone.trim().replace(/[^0-9]/g, "");
+        if (formattedPhone.startsWith("0")) {
+          formattedPhone = "62" + formattedPhone.slice(1);
+        }
+        const message = encodeURIComponent(`Halo, ini mengenai info kos.`);
+        window.open(
+          `https://wa.me/${formattedPhone}?text=${message}`,
+          "_blank"
+        );
+      }
+    </script>
+  </body>
+</html>
